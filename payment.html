@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Challenge ch03 - Payment</title>
+    <style>
+        body {
+            font-family: 'Sarabun', 'Tahoma', sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        .icon {
+            font-size: 32px;
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .title h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #111;
+        }
+        .title p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+        th {
+            background-color: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+        td {
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        tfoot tr {
+            background-color: #f8fafc;
+            font-weight: bold;
+        }
+        tfoot td {
+            border-top: 2px solid #e5e7eb;
+            border-bottom: none;
+            color: #111;
+            font-size: 16px;
+        }
+        .text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="icon">🔥</div>
+        <div class="title">
+            <h1>Challenge</h1>
+            <p>ch03 - Payment</p>
+        </div>
+    </div>
+
+    <p style="margin-bottom: 15px; font-weight: 500;">สรุปรายจ่ายร้านค้า</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>เลขรายการ</th>
+                <th>ชื่อ</th>
+                <th class="text-right">จำนวน</th>
+                <th class="text-right">ราคา (บาท)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>001</td>
+                <td>Pizza</td>
+                <td class="text-right">1 ชิ้น</td>
+                <td class="text-right">250</td>
+            </tr>
+            <tr>
+                <td>002</td>
+                <td>ไก่นิออร์ลีน</td>
+                <td class="text-right">5 ชิ้น</td>
+                <td class="text-right">99</td>
+            </tr>
+            <tr>
+                <td>003</td>
+                <td>ไก่นิออร์ลีน</td>
+                <td class="text-right">10 ชิ้น</td>
+                <td class="text-right">169</td>
+            </tr>
+            <tr>
+                <td>004</td>
+                <td>เฟรนไพร์</td>
+                <td class="text-right">1 จาน</td>
+                <td class="text-right">159</td>
+            </tr>
+            <tr>
+                <td>005</td>
+                <td>สปาเกตตี้</td>
+                <td class="text-right">1 จาน</td>
+                <td class="text-right">259</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-right">รวม</td>
+                <td class="text-right">936</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+</body>
+</html>

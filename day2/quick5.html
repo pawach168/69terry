@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge ch05 - Sign Up Form</title>
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #ff5722;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            height: 90px;
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .radio-group label, .checkbox-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        button[type="submit"] {
+            background-color: #ff5722;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>สมัครสมาชิก (Sign Up)</h2>
+    <form action="#" method="POST">
+        
+        <!-- ชื่อ - นามสกุล -->
+        <div class="form-group">
+            <label for="firstname">ชื่อ:</label>
+            <input type="text" id="firstname" name="firstname" required placeholder="กรอกชื่อจริง">
+        </div>
+
+        <div class="form-group">
+            <label for="lastname">นามสกุล:</label>
+            <input type="text" id="lastname" name="lastname" required placeholder="กรอกนามสกุล">
+        </div>
+
+        <!-- Bio (ประวัติโดยย่อ) ใช้ Textarea -->
+        <div class="form-group">
+            <label for="bio">Bio (ประวัติโดยย่อ):</label>
+            <textarea id="bio" name="bio" placeholder="เล่าเรื่องราวหรือประวัติย่อของคุณ..."></textarea>
+        </div>
+
+        <!-- อายุ -->
+        <div class="form-group">
+            <label for="age">อายุ:</label>
+            <input type="number" id="age" name="age" min="1" max="120" placeholder="ระบุอายุของคุณ">
+        </div>
+
+        <!-- วันเกิด -->
+        <div class="form-group">
+            <label for="birthday">วันเกิด:</label>
+            <input type="date" id="birthday" name="birthday">
+        </div>
+
+        <!-- email -->
+        <div class="form-group">
+            <label for="email">email:</label>
+            <input type="email" id="email" name="email" required placeholder="example@email.com">
+        </div>
+
+        <!-- ประเทศ Select -->
+        <div class="form-group">
+            <label for="country">ประเทศ:</label>
+            <select id="country" name="country" required>
+                <option value="">โปรดเลือกประเทศ</option>
+                <option value="thailand">ประเทศไทย</option>
+                <option value="singapore">สิงคโปร์</option>
+                <option value="japan">ญี่ปุ่น</option>
+                <option value="usa">สหรัฐอเมริกา</option>
+                <option value="uk">สหราชอาณาจักร</option>
+            </select>
+        </div>
+
+        <!-- เพศ ใช้ Radio -->
+        <div class="form-group">
+            <label>เพศ:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="gender" value="male"> ชาย</label>
+                <label><input type="radio" name="gender" value="female"> หญิง</label>
+                <label><input type="radio" name="gender" value="other"> อื่นๆ</label>
+            </div>
+        </div>
+
+        <!-- ความชื่นชอบ - checkbox -->
+        <div class="form-group">
+            <label>ความชื่นชอบ:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="hobbies" value="coding"> เขียนโค้ด</label>
+                <label><input type="checkbox" name="hobbies" value="reading"> อ่านหนังสือ</label>
+                <label><input type="checkbox" name="hobbies" value="gaming"> เล่นเกม</label>
+                <label><input type="checkbox" name="hobbies" value="traveling"> ท่องเที่ยว</label>
+            </div>
+        </div>
+
+        <!-- ปุ่ม submit -->
+        <button type="submit">Submit (สมัครสมาชิก)</button>
+
+    </form>
+</div>
+
+</body>
+</html>
