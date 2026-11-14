@@ -1,0 +1,65 @@
+from pathlib import Path
+
+html = """<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenge ch021 - Character Links</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; padding:28px; display:grid; place-items:center;
+      font-family:Arial,Tahoma,sans-serif; color:#282238;
+      background:linear-gradient(135deg,#f4efff,#eef5ff); }
+    main { width:min(720px,100%); padding:38px; background:#fff; border-radius:20px;
+      box-shadow:0 12px 40px rgba(46,25,82,.12); }
+    .tag { color:#7650a8; font-weight:bold; letter-spacing:.08em; }
+    h1 { margin:8px 0; font-size:clamp(2rem,6vw,3rem); }
+    .sub { color:#6c6878; margin:0 0 28px; }
+    ul { list-style:none; padding:0; margin:0; display:grid; gap:14px; }
+    li a { display:flex; justify-content:space-between; align-items:center;
+      padding:18px 20px; border:1px solid #e7def3; border-radius:12px;
+      color:#54258a; font-size:1.18rem; font-weight:bold; text-decoration:underline;
+      transition:.2s; }
+    li a:hover { background:#f7f1ff; border-color:#a989d0; transform:translateY(-2px); }
+    .arrow { text-decoration:none; font-size:1.2rem; }
+    .note { margin-top:26px; padding:14px 16px; background:#f6f7fb;
+      border-radius:10px; color:#5e5b69; line-height:1.6; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="tag">CHALLENGE ch021</div>
+  <h1>Characters</h1>
+  <p class="sub">FINAL FANTASY VIII — คลิกชื่อตัวละครเพื่ออ่านข้อมูลจากเว็บไซต์ทางการ</p>
+  <ul>
+    <li>
+      <a href="https://www.jp.square-enix.com/ffviii/character/"
+         target="_blank" rel="noopener noreferrer">
+        <span>Squall Leonhart</span><span class="arrow">↗</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.jp.square-enix.com/ffviii/character/rinoa.html"
+         target="_blank" rel="noopener noreferrer">
+        <span>Rinoa Heartilly</span><span class="arrow">↗</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.jp.square-enix.com/ffviii/character/zell.html"
+         target="_blank" rel="noopener noreferrer">
+        <span>Zell Dincht</span><span class="arrow">↗</span>
+      </a>
+    </li>
+  </ul>
+  <div class="note">
+    <strong>วิธีทดสอบ:</strong> คลิกชื่อแต่ละตัวละคร ลิงก์จะเปิดเว็บไซต์ในแท็บใหม่
+    ส่วนหน้า Characters นี้จะยังคงเปิดอยู่ สามารถสลับกลับมาได้ทันที
+  </div>
+</main>
+</body>
+</html>
+"""
+path = Path("/mnt/data/ch021_links.html")
+path.write_text(html, encoding="utf-8")
+print("Updated:", path, "bytes:", path.stat().st_size)

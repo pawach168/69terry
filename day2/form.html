@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>soulxer. PLAY — DOM Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-cream: #faf7f5;
+      --ink: #18181b;
+      --purple-accent: #7c5dfa;
+      --purple-pill: #e9d8fd;
+      --mint-green: #a7f3d0;
+      --locked-gray: #e2e8f0;
+      --dark-navy: #0f172a;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Neo-brutalist cards & buttons */
+    .brutal-card {
+      background: #ffffff;
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      box-shadow: 4px 4px 0px var(--ink);
+    }
+
+    .brutal-btn {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      box-shadow: 2px 2px 0px var(--ink);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .brutal-btn:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--ink);
+    }
+
+    .brutal-btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px var(--ink);
+    }
+
+    .brutal-level-card {
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      box-shadow: 3px 3px 0px var(--ink);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .brutal-level-card.unlocked {
+      background-color: var(--mint-green);
+      cursor: pointer;
+    }
+
+    .brutal-level-card.unlocked:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--ink);
+    }
+
+    .brutal-level-card.unlocked:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--ink);
+    }
+
+    .brutal-level-card.locked {
+      background-color: var(--locked-gray);
+      opacity: 0.92;
+      cursor: not-allowed;
+    }
+
+    .lvl-tab {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px var(--ink);
+      transition: all 0.12s ease;
+      cursor: pointer;
+    }
+
+    .lvl-tab.active {
+      background-color: var(--purple-accent);
+      color: #ffffff;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--ink);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .shake-error {
+      animation: shake 0.35s ease-in-out;
+      border-color: #ef4444 !important;
+      background-color: #fee2e2 !important;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .pop-in {
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-purple-200 selection:text-zinc-900">
+
+  <!-- Top Navigation Bar -->
+  <header class="w-full max-w-6xl mx-auto px-4 sm:px-8 pt-5 pb-4 flex items-center justify-between">
+    <!-- Left Logo -->
+    <div class="flex items-center gap-2.5 cursor-pointer" onclick="goHome()">
+      <div class="relative w-9 h-9 rounded-lg bg-[#7c5dfa] border-2 border-[#18181b] shadow-[2px_2px_0px_#18181b] flex items-center justify-center text-white font-extrabold text-xl">
+        S
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-300 absolute bottom-1 right-1"></span>
+      </div>
+      <span class="font-extrabold text-xl tracking-tight text-[#18181b]">soulxer.</span>
+      <span class="font-mono-code text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-[#e9d8fd] border border-[#18181b] shadow-[1.5px_1.5px_0px_#18181b]">
+        PLAY
+      </span>
+    </div>
+
+    <!-- Right Nav Links & Actions -->
+    <nav class="flex items-center gap-2 sm:gap-5 text-sm font-semibold">
+      <button onclick="goHome()" class="px-3 py-1.5 rounded-lg bg-[#e9d8fd] text-[#5b21b6] font-bold">
+        Play
+      </button>
+      <button onclick="showToast('Battle mode unlocks at Level 3!')" class="hidden md:inline-block text-zinc-700 hover:text-black transition">
+        Battle
+      </button>
+      <button onclick="showToast('Sandbox Builder coming soon!')" class="hidden md:inline-block text-zinc-700 hover:text-black transition">
+        Build
+      </button>
+      <button onclick="openGuideModal()" class="hidden sm:inline-block text-zinc-700 hover:text-black transition">
+        Learn
+      </button>
+      <button onclick="openProfileModal()" class="hidden sm:inline-block text-zinc-700 hover:text-black transition">
+        You
+      </button>
+
+      <!-- Sign in Button -->
+      <button id="auth-btn" onclick="openProfileModal()" class="brutal-btn bg-white px-3.5 py-1.5 text-xs sm:text-sm font-bold flex items-center gap-2">
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+          <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+        </svg>
+        <span id="auth-btn-text">Sign in</span>
+      </button>
+
+      <!-- Hamburger Menu -->
+      <button onclick="openMenuModal()" aria-label="Menu" class="brutal-btn bg-white w-9 h-9 flex items-center justify-center">
+        <svg class="w-4 h-4 text-zinc-900" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="w-full max-w-[820px] mx-auto px-4 pt-4 pb-16">
+    <!-- Sub-header bar -->
+    <div class="flex items-center justify-between text-xs mb-4">
+      <button onclick="goHome()" class="font-bold text-zinc-800 underline underline-offset-4 hover:text-[#7c5dfa] transition">
+        ← All games
+      </button>
+      <span class="text-zinc-400 font-medium">A little practice. A little progress.</span>
+    </div>
+
+    <!-- VIEW 1: LEVEL SELECTOR & LEADERBOARD -->
+    <section id="home-view">
+      <!-- Main Game Card -->
+      <div class="brutal-card px-5 sm:px-10 py-8 sm:py-10 text-center">
+        <!-- Brick Icon -->
+        <div class="mx-auto w-14 h-14 flex items-center justify-center mb-3 select-none">
+          <svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 64 64">
+            <rect x="6" y="10" width="52" height="44" rx="4" fill="#d9534f" stroke="#18181b" stroke-width="2.5"/>
+            <!-- Mortar lines -->
+            <line x1="6" y1="21" x2="58" y2="21" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="6" y1="32" x2="58" y2="32" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="6" y1="43" x2="58" y2="43" stroke="#f8fafc" stroke-width="2.5"/>
+            <!-- Vertical joints -->
+            <line x1="24" y1="10" x2="24" y2="21" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="42" y1="10" x2="42" y2="21" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="15" y1="21" x2="15" y2="32" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="33" y1="21" x2="33" y2="32" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="50" y1="21" x2="50" y2="32" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="24" y1="32" x2="24" y2="43" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="42" y1="32" x2="42" y2="43" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="15" y1="43" x2="15" y2="54" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="33" y1="43" x2="33" y2="54" stroke="#f8fafc" stroke-width="2.5"/>
+            <line x1="50" y1="43" x2="50" y2="54" stroke="#f8fafc" stroke-width="2.5"/>
+            <!-- Subtle highlight bricks -->
+            <rect x="25.5" y="11.5" width="15" height="8" fill="#e66c68"/>
+            <rect x="16.5" y="22.5" width="15" height="8" fill="#c9423e"/>
+            <rect x="25.5" y="33.5" width="15" height="8" fill="#e66c68"/>
+          </svg>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 mb-2">
+          DOM Builder
+        </h1>
+        <p class="font-mono-code text-xs sm:text-[13px] text-zinc-600 mb-6">
+          Click the structural tags in the correct order to build the layout.
+        </p>
+
+        <div class="font-mono-code text-[11px] font-bold tracking-widest uppercase text-zinc-500 mb-1">
+          CHOOSE YOUR DIFFICULTY
+        </div>
+        <div class="font-mono-code text-[11px] text-zinc-500 mb-6 flex items-center justify-center gap-1.5">
+          <span>🔒</span>
+          <span>Clear a level to unlock the next — work your way up to Insane.</span>
+        </div>
+
+        <!-- Difficulty Grid -->
+        <div id="difficulty-grid" class="max-w-[440px] mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Level Tabs for Leaderboard -->
+      <div class="flex items-center justify-center gap-2 mt-7 mb-4" id="leaderboard-tabs">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Leaderboard Card -->
+      <div class="brutal-card overflow-hidden">
+        <!-- Dark Header -->
+        <div class="bg-[#0f172a] text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2 font-bold text-xs sm:text-sm">
+            <span>🏆</span>
+            <span id="lb-title">DOM Builder · Lvl 1</span>
+          </div>
+          <div class="font-mono-code text-[11px] font-extrabold tracking-wider uppercase">
+            TOP <span class="text-amber-400">5</span>
+          </div>
+        </div>
+
+        <!-- Leaderboard Rows -->
+        <div id="leaderboard-rows" class="divide-y divide-zinc-100 bg-white">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: ACTIVE GAMEPLAY ARENA -->
+    <section id="game-view" class="hidden">
+      <div class="brutal-card p-5 sm:p-7">
+        <!-- Top Game Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b-2 border-zinc-900">
+          <div class="flex items-center gap-2.5">
+            <button onclick="goHome()" class="brutal-btn bg-zinc-100 px-3 py-1.5 text-xs font-bold">
+              ← Levels
+            </button>
+            <div>
+              <span id="game-lvl-badge" class="font-mono-code text-xs font-extrabold uppercase px-2.5 py-1 rounded bg-[#a7f3d0] border border-zinc-900">
+                LVL 1 • ROOKIE
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 font-mono-code text-xs font-bold">
+            <div class="flex items-center gap-1.5 bg-zinc-100 px-3 py-1.5 rounded-lg border border-zinc-900">
+              <span>⏱️</span>
+              <span id="game-timer">00.0s</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-amber-100 px-3 py-1.5 rounded-lg border border-zinc-900">
+              <span>🎯</span>
+              <span id="game-progress">0 / 4</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Objective Prompt -->
+        <div class="mb-5">
+          <h2 id="game-mission-title" class="text-lg font-extrabold text-zinc-900">
+            Mission: Basic Semantic Page
+          </h2>
+          <p id="game-mission-desc" class="font-mono-code text-xs text-zinc-600 mt-0.5">
+            Inspect the visual wireframe on the left and click the HTML structural tags in top-to-bottom DOM order.
+          </p>
+        </div>
+
+        <!-- Split Workspace: Wireframe Preview & Live DOM Tree -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <!-- Left: Target Visual Wireframe -->
+          <div class="border-2 border-zinc-900 rounded-xl p-4 bg-[#faf7f5]">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono-code text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+                Target Layout Blueprint
+              </span>
+              <span class="flex gap-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-400 border border-zinc-900"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-300 border border-zinc-900"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 border border-zinc-900"></span>
+              </span>
+            </div>
+            <div id="wireframe-canvas" class="space-y-2.5">
+              <!-- Wireframe blocks rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Right: Live Constructed DOM Tree -->
+          <div class="border-2 border-zinc-900 rounded-xl p-4 bg-[#0f172a] text-slate-100 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-700">
+                <span class="font-mono-code text-[11px] font-bold uppercase tracking-wider text-purple-300">
+                  DOM Tree Output
+                </span>
+                <span id="streak-indicator" class="font-mono-code text-[11px] text-emerald-400 font-bold">
+                  Ready
+                </span>
+              </div>
+              <div id="dom-tree-output" class="font-mono-code text-xs sm:text-[13px] space-y-1.5 min-h-[170px]">
+                <!-- Constructed tags appear here -->
+              </div>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono-code text-slate-400">
+              <span>Next slot: <strong id="next-slot-hint" class="text-amber-300">#1</strong></span>
+              <button onclick="restartCurrentLevel()" class="text-slate-300 hover:text-white underline">
+                Reset board
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tag Choice Bank -->
+        <div>
+          <div class="font-mono-code text-[11px] font-bold uppercase tracking-wider text-zinc-500 mb-2.5">
+            Available Structural Tags (Click in order)
+          </div>
+          <div id="tag-bank" class="flex flex-wrap gap-2.5">
+            <!-- Clickable tag buttons rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Victory Modal -->
+  <div id="victory-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="brutal-card max-w-md w-full p-6 sm:p-8 text-center pop-in">
+      <div class="text-4xl mb-2">🎉</div>
+      <h3 id="victory-title" class="text-2xl font-extrabold text-zinc-900">Level Cleared!</h3>
+      <p id="victory-subtitle" class="font-mono-code text-xs text-zinc-600 mt-1 mb-5">
+        Clean semantic structure! You unlocked the next difficulty.
+      </p>
+
+      <div class="grid grid-cols-2 gap-3 mb-6 font-mono-code">
+        <div class="bg-[#faf7f5] border-2 border-zinc-900 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-zinc-500 font-bold">Clear Time</div>
+          <div id="victory-time" class="text-lg font-extrabold text-zinc-900 mt-0.5">04.2s</div>
+        </div>
+        <div class="bg-[#e9d8fd] border-2 border-zinc-900 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-purple-900 font-bold">Total Clears</div>
+          <div id="victory-clears" class="text-lg font-extrabold text-purple-950 mt-0.5">1</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2.5">
+        <button onclick="goHome()" class="brutal-btn bg-white flex-1 py-2.5 text-sm font-bold">
+          Back to Menu
+        </button>
+        <button id="next-lvl-btn" onclick="playNextLevel()" class="brutal-btn bg-[#a7f3d0] flex-1 py-2.5 text-sm font-extrabold">
+          Next Level →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign-In / Player Profile Modal -->
+  <div id="profile-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="brutal-card max-w-sm w-full p-6 pop-in">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold">Player Profile</h3>
+        <button onclick="closeModal('profile-modal')" class="font-mono-code text-sm font-bold px-2 py-0.5 rounded hover:bg-zinc-100">✕</button>
+      </div>
+      <p class="font-mono-code text-xs text-zinc-600 mb-4">
+        Set your display name to appear on the DOM Builder Top 5 leaderboard when you clear levels.
+      </p>
+      <label class="block font-mono-code text-[11px] font-bold uppercase text-zinc-600 mb-1">Display Name</label>
+      <input id="player-name-input" type="text" maxlength="24" placeholder="e.g. Alex Dev"
+        class="w-full border-2 border-zinc-900 rounded-lg px-3 py-2 text-sm font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-[#7c5dfa]" />
+      <div class="flex gap-2">
+        <button onclick="savePlayerName()" class="brutal-btn bg-[#7c5dfa] text-white flex-1 py-2 text-sm font-bold">
+          Save Profile
+        </button>
+        <button onclick="resetAllProgress()" class="brutal-btn bg-rose-100 text-rose-900 px-3 py-2 text-xs font-bold" title="Reset unlocked levels">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learn / How to Play Modal -->
+  <div id="guide-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="brutal-card max-w-md w-full p-6 pop-in">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-extrabold">How DOM Builder Works</h3>
+        <button onclick="closeModal('guide-modal')" class="font-mono-code text-sm font-bold px-2 py-0.5 rounded hover:bg-zinc-100">✕</button>
+      </div>
+      <div class="space-y-3 font-mono-code text-xs text-zinc-700 leading-relaxed">
+        <p><strong>1. Read the Blueprint:</strong> Every webpage is a tree of semantic HTML elements arranged from top to bottom and outer wrapper to inner content.</p>
+        <p><strong>2. Click Tags in Order:</strong> Select the structural tags matching the highlighted slot in the Target Layout Blueprint.</p>
+        <p><strong>3. Climb to Insane:</strong> Clearing each level unlocks the next tier and logs your clears on the Top 5 Leaderboard.</p>
+      </div>
+      <button onclick="closeModal('guide-modal')" class="brutal-btn bg-[#a7f3d0] w-full py-2 text-sm font-bold mt-5">
+        Got it!
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-[#0f172a] text-white font-mono-code text-xs px-4 py-2.5 rounded-xl border-2 border-zinc-900 shadow-[3px_3px_0px_#7c5dfa] hidden z-50">
+  </div>
+
+  <script>
+    // ==========================================
+    // GAME DATA & LEVEL DEFINITIONS
+    // ==========================================
+    const LEVELS = [
+      {
+        id: 1,
+        code: 'LVL 1 • ROOKIE',
+        tabIcon: '🌱',
+        subtitle: 'Gentle pace, room to think.',
+        lockedText: 'Clear Lvl 1 to unlock',
+        spanFull: false,
+        missionTitle: 'Standard Semantic Webpage',
+        missionDesc: 'Build a classic top-to-bottom webpage structure using core HTML5 landmarks.',
+        sequence: [
+          { tag: '<header>', label: 'Top Site Banner & Logo', indent: 0, color: 'bg-purple-200' },
+          { tag: '<nav>', label: 'Primary Navigation Links', indent: 1, color: 'bg-indigo-200' },
+          { tag: '<main>', label: 'Primary Page Content Area', indent: 0, color: 'bg-emerald-200' },
+          { tag: '<footer>', label: 'Bottom Copyright & Links', indent: 0, color: 'bg-amber-200' }
+        ],
+        distractors: ['<aside>', '<table>']
+      },
+      {
+        id: 2,
+        code: 'LVL 2 • EASY',
+        tabIcon: '😊',
+        subtitle: 'Nested sections & articles.',
+        lockedText: 'Clear Lvl 1 to unlock',
+        spanFull: false,
+        missionTitle: 'Editorial Blog Layout',
+        missionDesc: 'Construct a blog post container with an article, section, and complementary sidebar.',
+        sequence: [
+          { tag: '<header>', label: 'Publication Masthead', indent: 0, color: 'bg-purple-200' },
+          { tag: '<main>', label: 'Content Wrapper', indent: 0, color: 'bg-emerald-200' },
+          { tag: '<article>', label: 'Main Story Post', indent: 1, color: 'bg-sky-200' },
+          { tag: '<section>', label: 'Comments & Discussion', indent: 2, color: 'bg-teal-200' },
+          { tag: '<aside>', label: 'Related Articles Sidebar', indent: 1, color: 'bg-rose-200' },
+          { tag: '<footer>', label: 'Site Footer', indent: 0, color: 'bg-amber-200' }
+        ],
+        distractors: ['<dialog>', '<canvas>']
+      },
+      {
+        id: 3,
+        code: 'LVL 3 • MEDIUM',
+        tabIcon: '🔥',
+        subtitle: 'Media cards & figures.',
+        lockedText: 'Clear Lvl 2 to unlock',
+        spanFull: false,
+        missionTitle: 'Product Gallery & Media Card',
+        missionDesc: 'Assemble a structured showcase card with figure, caption, and action bar.',
+        sequence: [
+          { tag: '<nav>', label: 'Breadcrumb Navigation', indent: 0, color: 'bg-indigo-200' },
+          { tag: '<main>', label: 'Product Viewport', indent: 0, color: 'bg-emerald-200' },
+          { tag: '<figure>', label: 'Hero Product Image Frame', indent: 1, color: 'bg-purple-200' },
+          { tag: '<figcaption>', label: 'Image Attribution Text', indent: 2, color: 'bg-pink-200' },
+          { tag: '<details>', label: 'Expandable Tech Specs', indent: 1, color: 'bg-sky-200' },
+          { tag: '<summary>', label: 'Specs Toggle Heading', indent: 2, color: 'bg-amber-200' },
+          { tag: '<footer>', label: 'Store Guarantees Bar', indent: 0, color: 'bg-teal-200' }
+        ],
+        distractors: ['<marquee>', '<embed>', '<fieldset>']
+      },
+      {
+        id: 4,
+        code: 'LVL 4 • HARD',
+        tabIcon: '⚡',
+        subtitle: 'Interactive forms & data.',
+        lockedText: 'Clear Lvl 3 to unlock',
+        spanFull: false,
+        missionTitle: 'Accessible Checkout Form DOM',
+        missionDesc: 'Order the semantic form landmarks and grouped input controls accurately.',
+        sequence: [
+          { tag: '<header>', label: 'Checkout Progress Header', indent: 0, color: 'bg-purple-200' },
+          { tag: '<main>', label: 'Checkout Container', indent: 0, color: 'bg-emerald-200' },
+          { tag: '<form>', label: 'Payment Submission Form', indent: 1, color: 'bg-sky-200' },
+          { tag: '<fieldset>', label: 'Billing Address Group', indent: 2, color: 'bg-indigo-200' },
+          { tag: '<legend>', label: 'Fieldset Group Title', indent: 3, color: 'bg-amber-200' },
+          { tag: '<output>', label: 'Live Calculated Total', indent: 2, color: 'bg-teal-200' },
+          { tag: '<aside>', label: 'Order Summary Receipt', indent: 1, color: 'bg-rose-200' },
+          { tag: '<footer>', label: 'Security & PCI Notice', indent: 0, color: 'bg-slate-200' }
+        ],
+        distractors: ['<optgroup>', '<datalist>', '<samp>']
+      },
+      {
+        id: 5,
+        code: 'LVL 5 • INSANE',
+        tabIcon: '💀',
+        subtitle: 'Deep web app architecture.',
+        lockedText: 'Clear Lvl 4 to unlock',
+        spanFull: true,
+        missionTitle: 'Full-Stack Dashboard Application',
+        missionDesc: 'Master-level DOM hierarchy: combine app shell, modal dialog, data table, and semantic regions.',
+        sequence: [
+          { tag: '<header>', label: 'Global App Topbar', indent: 0, color: 'bg-purple-200' },
+          { tag: '<nav>', label: 'Workspace Switcher Menu', indent: 1, color: 'bg-indigo-200' },
+          { tag: '<main>', label: 'Analytics Workspace', indent: 0, color: 'bg-emerald-200' },
+          { tag: '<section>', label: 'KPI Metrics Grid', indent: 1, color: 'bg-sky-200' },
+          { tag: '<table>', label: 'Transactions Ledger', indent: 2, color: 'bg-teal-200' },
+          { tag: '<thead>', label: 'Column Headers Row', indent: 3, color: 'bg-amber-200' },
+          { tag: '<tbody>', label: 'Transaction Records Body', indent: 3, color: 'bg-orange-200' },
+          { tag: '<aside>', label: 'Live Activity Inspector', indent: 1, color: 'bg-rose-200' },
+          { tag: '<dialog>', label: 'Export Confirmation Modal', indent: 1, color: 'bg-fuchsia-200' },
+          { tag: '<footer>', label: 'System Status & Version', indent: 0, color: 'bg-slate-200' }
+        ],
+        distractors: ['<tfoot>', '<colgroup>', '<template>', '<slot>']
+      }
+    ];
+
+    // Seed Leaderboard Data (Matching Screenshot for Lvl 1 + realistic entries for 2..5)
+    const DEFAULT_LEADERBOARDS = {
+      1: [
+        { name: 'Komal k', clears: 5, initials: 'K', bg: 'bg-slate-600 text-white' },
+        { name: 'SAMUEL VARGAS REGIS', clears: 4, initials: 'SV', bg: 'bg-amber-700 text-white' },
+        { name: 'Araiva Viruskizz', clears: 3, initials: 'AV', bg: 'bg-sky-700 text-white' },
+        { name: 'Khaled Abuarida', clears: 3, initials: 'KA', bg: 'bg-emerald-700 text-white' },
+        { name: 'Himvardhan Singh', clears: 3, initials: 'HS', bg: 'bg-indigo-700 text-white' }
+      ],
+      2: [
+        { name: 'Komal k', clears: 4, initials: 'K', bg: 'bg-slate-600 text-white' },
+        { name: 'SAMUEL VARGAS REGIS', clears: 3, initials: 'SV', bg: 'bg-amber-700 text-white' },
+        { name: 'Elena Rostova', clears: 2, initials: 'ER', bg: 'bg-purple-700 text-white' },
+        { name: 'Khaled Abuarida', clears: 2, initials: 'KA', bg: 'bg-emerald-700 text-white' },
+        { name: 'Marcus Vance', clears: 1, initials: 'MV', bg: 'bg-rose-700 text-white' }
+      ],
+      3: [
+        { name: 'SAMUEL VARGAS REGIS', clears: 3, initials: 'SV', bg: 'bg-amber-700 text-white' },
+        { name: 'Komal k', clears: 2, initials: 'K', bg: 'bg-slate-600 text-white' },
+        { name: 'Devika Nair', clears: 2, initials: 'DN', bg: 'bg-teal-700 text-white' },
+        { name: 'Araiva Viruskizz', clears: 1, initials: 'AV', bg: 'bg-sky-700 text-white' },
+        { name: 'Liam O’Connor', clears: 1, initials: 'LO', bg: 'bg-indigo-700 text-white' }
+      ],
+      4: [
+        { name: 'Komal k', clears: 2, initials: 'K', bg: 'bg-slate-600 text-white' },
+        { name: 'Devika Nair', clears: 1, initials: 'DN', bg: 'bg-teal-700 text-white' },
+        { name: 'SAMUEL VARGAS REGIS', clears: 1, initials: 'SV', bg: 'bg-amber-700 text-white' },
+        { name: 'Sora Takahashi', clears: 1, initials: 'ST', bg: 'bg-purple-700 text-white' },
+        { name: 'Khaled Abuarida', clears: 1, initials: 'KA', bg: 'bg-emerald-700 text-white' }
+      ],
+      5: [
+        { name: 'Komal k', clears: 1, initials: 'K', bg: 'bg-slate-600 text-white' },
+        { name: 'Sora Takahashi', clears: 1, initials: 'ST', bg: 'bg-purple-700 text-white' },
+        { name: 'Devika Nair', clears: 1, initials: 'DN', bg: 'bg-teal-700 text-white' },
+        { name: 'SAMUEL VARGAS REGIS', clears: 1, initials: 'SV', bg: 'bg-amber-700 text-white' },
+        { name: 'Elena Rostova', clears: 1, initials: 'ER', bg: 'bg-rose-700 text-white' }
+      ]
+    };
+
+    // ==========================================
+    // STATE MANAGEMENT (LocalStorage Backed)
+    // ==========================================
+    let state = {
+      unlockedLevel: parseInt(localStorage.getItem('soulxer_unlocked') || '1', 10),
+      selectedLbLevel: 1,
+      playerName: localStorage.getItem('soulxer_player') || '',
+      leaderboards: JSON.parse(localStorage.getItem('soulxer_lb') || 'null') || structuredClone(DEFAULT_LEADERBOARDS),
+      activeLevelId: null,
+      currentStep: 0,
+      startTime: 0,
+      timerInterval: null
+    };
+
+    function saveState() {
+      localStorage.setItem('soulxer_unlocked', String(state.unlockedLevel));
+      localStorage.setItem('soulxer_player', state.playerName);
+      localStorage.setItem('soulxer_lb', JSON.stringify(state.leaderboards));
+    }
+
+    // ==========================================
+    // RENDER HOME: DIFFICULTIES & LEADERBOARD
+    // ==========================================
+    function renderHome() {
+      // Update auth button
+      const authText = document.getElementById('auth-btn-text');
+      authText.textContent = state.playerName ? state.playerName : 'Sign in';
+
+      // Render Difficulty Grid
+      const grid = document.getElementById('difficulty-grid');
+      grid.innerHTML = '';
+
+      LEVELS.forEach((lvl) => {
+        const isUnlocked = lvl.id <= state.unlockedLevel;
+        const card = document.createElement('div');
+        card.className = `brutal-level-card p-3.5 flex items-center gap-3 ${
+          isUnlocked ? 'unlocked' : 'locked'
+        } ${lvl.spanFull ? 'sm:col-span-2' : ''}`;
+
+        if (isUnlocked) {
+          card.onclick = () => startLevel(lvl.id);
+        } else {
+          card.onclick = () => showToast(`🔒 Clear Level ${lvl.id - 1} first to unlock ${lvl.code}!`);
+        }
+
+        card.innerHTML = `
+          <div class="text-xl shrink-0 select-none">
+            ${isUnlocked ? '🌱' : '🔒'}
+          </div>
+          <div>
+            <div class="font-mono-code text-xs font-extrabold tracking-tight text-zinc-900">
+              ${lvl.code}
+            </div>
+            <div class="font-mono-code text-[11px] text-zinc-700 leading-snug mt-0.5">
+              ${isUnlocked ? lvl.subtitle : lvl.lockedText}
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Render Leaderboard Tabs
+      const tabsContainer = document.getElementById('leaderboard-tabs');
+      tabsContainer.innerHTML = '';
+      LEVELS.forEach((lvl) => {
+        const isActive = state.selectedLbLevel === lvl.id;
+        const btn = document.createElement('button');
+        btn.className = `lvl-tab px-3 py-1.5 font-mono-code text-xs font-extrabold flex items-center gap-1.5 ${
+          isActive ? 'active' : 'bg-white text-zinc-800 hover:bg-zinc-50'
+        }`;
+        btn.innerHTML = `<span>${lvl.tabIcon}</span><span>${lvl.id}</span>`;
+        btn.onclick = () => {
+          state.selectedLbLevel = lvl.id;
+          renderHome();
+        };
+        tabsContainer.appendChild(btn);
+      });
+
+      // Render Leaderboard Rows
+      document.getElementById('lb-title').textContent = `DOM Builder · Lvl ${state.selectedLbLevel}`;
+      const rowsContainer = document.getElementById('leaderboard-rows');
+      rowsContainer.innerHTML = '';
+
+      const entries = (state.leaderboards[state.selectedLbLevel] || [])
+        .slice()
+        .sort((a, b) => b.clears - a.clears)
+        .slice(0, 5);
+
+      const rankMedals = ['🥇', '🥈', '🥉'];
+
+      entries.forEach((entry, idx) => {
+        const isCurrentUser = state.playerName && entry.name.toLowerCase() === state.playerName.toLowerCase();
+        const row = document.createElement('div');
+        row.className = `px-5 py-3.5 flex items-center justify-between transition ${
+          isCurrentUser ? 'bg-purple-50/80' : 'hover:bg-zinc-50/80'
+        }`;
+
+        const rankDisplay = idx < 3
+          ? `<span class="text-base">${rankMedals[idx]}</span>`
+          : `<span class="font-mono-code text-xs font-bold text-zinc-400 w-5 text-center">${idx + 1}</span>`;
+
+        row.innerHTML = `
+          <div class="flex items-center gap-3.5">
+            <div class="w-5 flex justify-center">${rankDisplay}</div>
+            <div class="w-8 h-8 rounded-full ${entry.bg || 'bg-zinc-700 text-white'} border border-zinc-900 flex items-center justify-center font-bold text-xs shadow-xs">
+              ${entry.initials || entry.name.slice(0, 2).toUpperCase()}
+            </div>
+            <div class="font-bold text-xs sm:text-sm text-zinc-900 flex items-center gap-2">
+              <span>${escapeHtml(entry.name)}</span>
+              ${isCurrentUser ? '<span class="font-mono-code text-[10px] px-1.5 py-0.5 rounded bg-[#e9d8fd] text-purple-900 border border-purple-300">YOU</span>' : ''}
+            </div>
+          </div>
+          <div class="font-mono-code text-xs font-extrabold text-zinc-900">
+            ${entry.clears} <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">CLEARS</span>
+          </div>
+        `;
+        rowsContainer.appendChild(row);
+      });
+    }
+
+    // ==========================================
+    // GAMEPLAY ENGINE
+    // ==========================================
+    function startLevel(levelId) {
+      const level = LEVELS.find((l) => l.id === levelId);
+      if (!level) return;
+
+      state.activeLevelId = levelId;
+      state.currentStep = 0;
+      state.startTime = performance.now();
+
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('game-view').classList.remove('hidden');
+
+      document.getElementById('game-lvl-badge').textContent = level.code;
+      document.getElementById('game-mission-title').textContent = `Mission: ${level.missionTitle}`;
+      document.getElementById('game-mission-desc').textContent = level.missionDesc;
+      document.getElementById('streak-indicator').textContent = 'Building...';
+
+      if (state.timerInterval) clearInterval(state.timerInterval);
+      state.timerInterval = setInterval(() => {
+        const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(1);
+        document.getElementById('game-timer').textContent = `${elapsed.padStart(4, '0')}s`;
+      }, 100);
+
+      renderGameplayBoard();
+    }
+
+    function restartCurrentLevel() {
+      if (state.activeLevelId) {
+        startLevel(state.activeLevelId);
+      }
+    }
+
+    function renderGameplayBoard() {
+      const level = LEVELS.find((l) => l.id === state.activeLevelId);
+      const totalSteps = level.sequence.length;
+
+      document.getElementById('game-progress').textContent = `${state.currentStep} / ${totalSteps}`;
+      document.getElementById('next-slot-hint').textContent =
+        state.currentStep < totalSteps ? `#${state.currentStep + 1} (${level.sequence[state.currentStep].label})` : 'Complete!';
+
+      // 1. Render Wireframe Blueprint
+      const wireframe = document.getElementById('wireframe-canvas');
+      wireframe.innerHTML = '';
+
+      level.sequence.forEach((step, idx) => {
+        const isCompleted = idx < state.currentStep;
+        const isCurrent = idx === state.currentStep;
+        const indentMargin = step.indent * 16;
+
+        const block = document.createElement('div');
+        block.style.marginLeft = `${indentMargin}px`;
+        block.className = `border-2 rounded-lg px-3 py-2 transition-all flex items-center justify-between ${
+          isCompleted
+            ? `${step.color} border-zinc-900 shadow-[2px_2px_0px_#18181b]`
+            : isCurrent
+            ? 'bg-white border-dashed border-[#7c5dfa] ring-2 ring-purple-200'
+            : 'bg-zinc-100/70 border-zinc-300 text-zinc-400'
+        }`;
+
+        block.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="font-mono-code text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+              isCompleted ? 'bg-zinc-900 text-white' : isCurrent ? 'bg-[#7c5dfa] text-white' : 'bg-zinc-200 text-zinc-500'
+            }">
+              #${idx + 1}
+            </span>
+            <span class="text-xs font-bold ${isCompleted ? 'text-zinc-900' : isCurrent ? 'text-zinc-900' : 'text-zinc-400'}">
+              ${step.label}
+            </span>
+          </div>
+          <span class="font-mono-code text-xs font-extrabold ${isCompleted ? 'text-zinc-900' : 'text-zinc-400'}">
+            ${isCompleted ? escapeHtml(step.tag) : isCurrent ? '<???>' : '...'}
+          </span>
+        `;
+        wireframe.appendChild(block);
+      });
+
+      // 2. Render Live DOM Tree Output
+      const domOutput = document.getElementById('dom-tree-output');
+      domOutput.innerHTML = `<div class="text-slate-400">&lt;body&gt;</div>`;
+
+      for (let i = 0; i < state.currentStep; i++) {
+        const item = level.sequence[i];
+        const pad = '&nbsp;&nbsp;'.repeat(item.indent + 1);
+        const closeTag = item.tag.replace('<', '</');
+        const line = document.createElement('div');
+        line.className = 'text-emerald-300 pop-in';
+        line.innerHTML = `${pad}<span class="text-purple-300 font-bold">${escapeHtml(item.tag)}</span> <span class="text-slate-500 text-[11px]">/* ${item.label} */</span> <span class="text-purple-300 font-bold">${escapeHtml(closeTag)}</span>`;
+        domOutput.appendChild(line);
+      }
+
+      if (state.currentStep < totalSteps) {
+        const nextItem = level.sequence[state.currentStep];
+        const pad = '&nbsp;&nbsp;'.repeat(nextItem.indent + 1);
+        const cursorLine = document.createElement('div');
+        cursorLine.className = 'text-amber-300 animate-pulse';
+        cursorLine.innerHTML = `${pad}&lt;select_tag_${state.currentStep + 1} /&gt;`;
+        domOutput.appendChild(cursorLine);
+      }
+
+      const bodyClose = document.createElement('div');
+      bodyClose.className = 'text-slate-400';
+      bodyClose.innerHTML = `&lt;/body&gt;`;
+      domOutput.appendChild(bodyClose);
+
+      // 3. Render Shuffled Tag Bank
+      const bank = document.getElementById('tag-bank');
+      bank.innerHTML = '';
+
+      // Combine required tags + distractors, deduplicated and deterministically shuffled per level
+      const allTagsSet = new Set([
+        ...level.sequence.map((s) => s.tag),
+        ...level.distractors
+      ]);
+      const tagPool = Array.from(allTagsSet).sort((a, b) => hashStr(a + level.id) - hashStr(b + level.id));
+
+      // Count remaining required occurrences of each tag
+      const remainingCounts = {};
+      for (let i = state.currentStep; i < totalSteps; i++) {
+        const t = level.sequence[i].tag;
+        remainingCounts[t] = (remainingCounts[t] || 0) + 1;
+      }
+
+      tagPool.forEach((tag) => {
+        const isStillNeeded = (remainingCounts[tag] || 0) > 0;
+        const isDistractor = !level.sequence.some((s) => s.tag === tag);
+        const isUsedUp = !isDistractor && !isStillNeeded;
+
+        const btn = document.createElement('button');
+        btn.disabled = isUsedUp;
+        btn.className = `brutal-btn font-mono-code text-xs sm:text-sm font-extrabold px-3.5 py-2 ${
+          isUsedUp
+            ? 'bg-zinc-200 text-zinc-400 border-zinc-400 shadow-none cursor-not-allowed opacity-60'
+            : 'bg-white text-zinc-900 hover:bg-[#e9d8fd]'
+        }`;
+        btn.textContent = tag;
+        btn.onclick = () => handleTagClick(tag, btn);
+        bank.appendChild(btn);
+      });
+    }
+
+    function handleTagClick(selectedTag, btnElement) {
+      const level = LEVELS.find((l) => l.id === state.activeLevelId);
+      const expectedStep = level.sequence[state.currentStep];
+
+      if (selectedTag === expectedStep.tag) {
+        state.currentStep++;
+        document.getElementById('streak-indicator').textContent = '✓ Valid node!';
+        document.getElementById('streak-indicator').className = 'font-mono-code text-[11px] text-emerald-400 font-bold';
+
+        if (state.currentStep >= level.sequence.length) {
+          completeLevel();
+        } else {
+          renderGameplayBoard();
+        }
+      } else {
+        // Wrong tag feedback
+        btnElement.classList.add('shake-error');
+        document.getElementById('streak-indicator').textContent = `✕ Expected slot #${state.currentStep + 1}`;
+        document.getElementById('streak-indicator').className = 'font-mono-code text-[11px] text-rose-400 font-bold';
+        setTimeout(() => btnElement.classList.remove('shake-error'), 380);
+      }
+    }
+
+    function completeLevel() {
+      clearInterval(state.timerInterval);
+      const finalSeconds = ((performance.now() - state.startTime) / 1000).toFixed(1);
+      const clearedLvl = state.activeLevelId;
+
+      // Unlock next level
+      if (clearedLvl >= state.unlockedLevel && clearedLvl < LEVELS.length) {
+        state.unlockedLevel = clearedLvl + 1;
+      }
+
+      // Record Clear on Leaderboard
+      const playerName = state.playerName || 'You (Guest)';
+      const lb = state.leaderboards[clearedLvl] || [];
+      const existing = lb.find((e) => e.name.toLowerCase() === playerName.toLowerCase());
+      let userClears = 1;
+
+      if (existing) {
+        existing.clears += 1;
+        userClears = existing.clears;
+      } else {
+        lb.push({
+          name: playerName,
+          clears: 1,
+          initials: playerName.slice(0, 2).toUpperCase(),
+          bg: 'bg-[#7c5dfa] text-white'
+        });
+      }
+      state.leaderboards[clearedLvl] = lb;
+      state.selectedLbLevel = clearedLvl;
+      saveState();
+
+      // Update & Open Victory Modal
+      renderGameplayBoard();
+      document.getElementById('victory-title').textContent = `LVL ${clearedLvl} Cleared!`;
+      document.getElementById('victory-subtitle').textContent =
+        clearedLvl < LEVELS.length
+          ? `Awesome DOM architecture! Level ${clearedLvl + 1} is now unlocked.`
+          : 'Unbelievable! You conquered INSANE difficulty!';
+      document.getElementById('victory-time').textContent = `${finalSeconds}s`;
+      document.getElementById('victory-clears').textContent = userClears;
+
+      const nextBtn = document.getElementById('next-lvl-btn');
+      if (clearedLvl < LEVELS.length) {
+        nextBtn.classList.remove('hidden');
+      } else {
+        nextBtn.classList.add('hidden');
+      }
+
+      const modal = document.getElementById('victory-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function playNextLevel() {
+      closeModal('victory-modal');
+      if (state.activeLevelId < LEVELS.length) {
+        startLevel(state.activeLevelId + 1);
+      } else {
+        goHome();
+      }
+    }
+
+    function goHome() {
+      if (state.timerInterval) clearInterval(state.timerInterval);
+      closeModal('victory-modal');
+      document.getElementById('game-view').classList.add('hidden');
+      document.getElementById('home-view').classList.remove('hidden');
+      renderHome();
+    }
+
+    // ==========================================
+    // MODALS & UTILITIES
+    // ==========================================
+    function openProfileModal() {
+      document.getElementById('player-name-input').value = state.playerName;
+      const modal = document.getElementById('profile-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function savePlayerName() {
+      const val = document.getElementById('player-name-input').value.trim();
+      state.playerName = val;
+      saveState();
+      closeModal('profile-modal');
+      renderHome();
+      showToast(val ? `Signed in as ${val}` : 'Signed out to Guest mode');
+    }
+
+    function resetAllProgress() {
+      state.unlockedLevel = 1;
+      state.leaderboards = structuredClone(DEFAULT_LEADERBOARDS);
+      saveState();
+      closeModal('profile-modal');
+      renderHome();
+      showToast('Progress & leaderboards reset to default.');
+    }
+
+    function openGuideModal() {
+      const modal = document.getElementById('guide-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function openMenuModal() {
+      openGuideModal();
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2800);
+    }
+
+    function hashStr(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Boot App
+    renderHome();
+  </script>
+</body>
+</html>

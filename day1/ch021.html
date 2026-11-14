@@ -1,0 +1,78 @@
+from pathlib import Path
+
+html = """<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenge ch021 - Links</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: Arial, Tahoma, sans-serif;
+      background: linear-gradient(135deg, #f5f0ff, #eef5ff);
+      color: #25213a;
+      display: grid; place-items: center; padding: 28px;
+    }
+    main {
+      width: min(720px, 100%); background: white; padding: 38px;
+      border-radius: 20px; box-shadow: 0 12px 40px rgba(46, 25, 82, .12);
+    }
+    .tag { color: #7650a8; font-weight: 700; letter-spacing: .08em; }
+    h1 { margin: 8px 0 6px; font-size: clamp(2rem, 6vw, 3rem); }
+    .sub { color: #6c6878; margin: 0 0 28px; }
+    ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+    li a {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 17px 20px; border: 1px solid #e7def3; border-radius: 12px;
+      color: #54258a; font-size: 1.15rem; font-weight: 700;
+      text-decoration: none; transition: .2s ease;
+    }
+    li a:hover { background: #f7f1ff; border-color: #a989d0; transform: translateY(-2px); }
+    .arrow { font-size: 1.3rem; }
+    .note { margin-top: 26px; padding: 14px 16px; background: #f6f7fb; border-radius: 10px; color: #5e5b69; line-height: 1.6; }
+    footer { margin-top: 24px; color: #8b8794; font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="tag">CHALLENGE ch021</div>
+    <h1>Characters</h1>
+    <p class="sub">Final Fantasy VIII — Character links</p>
+
+    <ul>
+      <li>
+        <a href="https://finalfantasy.fandom.com/wiki/Squall_Leonhart"
+           target="_blank" rel="noopener noreferrer">
+          <span>Squall Leonhart</span><span class="arrow">↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://finalfantasy.fandom.com/wiki/Rinoa_Heartilly"
+           target="_blank" rel="noopener noreferrer">
+          <span>Rinoa Heartilly</span><span class="arrow">↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://finalfantasy.fandom.com/wiki/Zell_Dincht"
+           target="_blank" rel="noopener noreferrer">
+          <span>Zell Dincht</span><span class="arrow">↗</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="note">
+      <strong>วิธีใช้งาน:</strong> คลิกชื่อตัวละครเพื่อเปิดเว็บไซต์เนื้อหาที่เกี่ยวข้องในแท็บใหม่
+      หน้า Characters นี้จะยังเปิดค้างอยู่ คุณจึงกลับมาหน้าแรกได้โดยสลับกลับแท็บเดิม
+      หรือปิดแท็บเนื้อหาที่เปิดขึ้นมา
+    </div>
+    <footer>HTML • Hyperlink • target="_blank"</footer>
+  </main>
+</body>
+</html>
+"""
+
+path = Path("/mnt/data/ch021_links.html")
+path.write_text(html, encoding="utf-8")
+print(path, path.stat().st_size)
